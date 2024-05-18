@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Incorrect stylesheet link corrected -->
+    <link rel="stylesheet" href="static/css/style.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Car Price Predictor</title>
+</head>
+
+<body>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="mt-5 mb-5" style="width: 100%; height: 100%">
+                <div style="text-align:center">
+                    <h1>Are you planning to buy a Used Car?</h1>
+                    <br>
+                    <h5>We can help you calculate the correct price</h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Moved card-body inside the card div -->
+        <div class="card-body">
+
+            <form method="post" accept-charset="utf-8">
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the company with model:</b></label>
+                    <select class="selectpicker form-control" id="name" name="name" required="1">
+                        {% for name in name %}
+                        <option value="{{ name }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the year Of purchase:</b></label>
+                    <select class="selectpicker form-control" id="year" name="year" required>
+                        {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the closest number of kms travelled:</b></label>
+                    <select class="selectpicker form-control" id="km_driven" name="km_driven" required="1">
+                        {% for km_driven in km_driven %}
+                        <option value="{{km_driven}}">{{km_driven}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the fuel type:</b></label>
+                    <select class="selectpicker form-control" id="fuel" name="fuel" required="1">
+                        {% for fuel in fuel %}
+                        <option value="{{fuel}}">{{ fuel }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Replicated structure for other select elements with corrected loop variables and value assignments -->
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Enter the no of seats:</b></label>
+                    <input class="form-control" type="text" id="seats" name="seats" placeholder="Enter the no of seats">
+                    <!-- Removed redundant select for seats -->
+                </div>
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the seller type:</b></label>
+                    <select class="selectpicker form-control" id="seller_type" name="seller_type" required="1">
+                        {% for seller_type in seller_type %}
+
+                        <option value="{{seller_type}}">{{ seller_type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the owner type:</b></label>
+                    <select class="selectpicker form-control" id="owner" name="owner" required>
+                        {% for owner in owner %}
+                        <option value="{{ owner }}">{{ owner }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the transmission type:</b></label>
+                    <select class="selectpicker form-control" id="transmission" name="transmission" required>
+                        {% for transmission in transmission %}
+                        <option value="{{ transmission }}">{{ transmission }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the mileage of car:</b></label>
+                    <select class="selectpicker form-control" id="mileage" name="mileage" required>
+                        {% for mileage in mileage %}
+                        <option value="{{ mileage }}">{{ mileage }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="form-group" style="text-align:left">
+                    <label><b>Select the engine type:</b></label>
+                    <select class="selectpicker form-control" id="engine" name="engine" required="1">
+                        {% for engine in engine %}
+                        <option value="{{engine}}">{{ engine }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="text-align:center">
+                    <button class="btn btn-primary form-control mt-4 mb-4" onclick="send_data()">Show Price</button>
+                </div>
+            </form>
+        </div>
+        <div class="predict">
+            <div class="row">
+                <div class="col-12 mt-1 mb-50" style="text-align: center">
+                    <h4><span id="prediction"></span></h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function form_handler(event) {
+            event.preventDefault(); // Don't submit the form normally
+        }
+        function send_data() {
+            document.querySelector('form').addEventListener("submit", form_handler);
+
+            var fd = new FormData(document.querySelector('form'));
+
+            var xhr = new XMLHttpRequest({ mozSystem: true });
+
+            xhr.open('POST', '/predict', true);
+            document.getElementById('prediction').innerHTML = "Wait, while we are calculating the price.....";
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == XMLHttpRequest.DONE) {
+                    document.getElementById('prediction').innerHTML = "Our Prediction: ₹" + xhr.responseText;
+
+                }
+            };
+
+            xhr.onload = function () { };
+
+            xhr.send(fd);
+        }
+    </script>
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+
+</html>
